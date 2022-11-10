@@ -2,6 +2,7 @@
 const fs = require('node:fs');
 const readline = require('node:readline');
 const puppeteer = require('puppeteer');
+var i = 0;
 
 async function requestPage(url) {
   const browser = await puppeteer.launch();
@@ -12,9 +13,10 @@ async function requestPage(url) {
   // page.pdf() is currently supported only in headless mode.
   // @see https://bugs.chromium.org/p/chromium/issues/detail?id=753118
   await page.pdf({
-    path: `${url}.pdf`,
+    path: `${i}.pdf`,
     format: 'letter',
   });
+  i++;
 
   await browser.close();
 }
@@ -33,8 +35,7 @@ async function processLineByLine() {
     // Each line in input.txt will be successively available here as `line`.
     console.log(`Line from file: ${line}`);
     await requestPage(line).then(resp => {
-    console.log(resp.stdout);
-    console.log(`Done`);
+    console.log(`Done with ${line}`);
   }).catch(err => {
     console.log(err);
   });
