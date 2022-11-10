@@ -1,5 +1,23 @@
+'use strict';
 const fs = require('node:fs');
 const readline = require('node:readline');
+const puppeteer = require('puppeteer');
+
+async function requestPage(url) {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto(url, {
+    waitUntil: 'networkidle2',
+  });
+  // page.pdf() is currently supported only in headless mode.
+  // @see https://bugs.chromium.org/p/chromium/issues/detail?id=753118
+  await page.pdf({
+    path: `${url}.pdf`,
+    format: 'letter',
+  });
+
+  await browser.close();
+}
 
 async function processLineByLine() {
   const fileStream = fs.createReadStream('URLs.txt');
@@ -14,6 +32,12 @@ async function processLineByLine() {
   for await (const line of rl) {
     // Each line in input.txt will be successively available here as `line`.
     console.log(`Line from file: ${line}`);
+    await requestPage(line).then(resp => {
+    console.log(resp.stdout);
+    console.log(`Done`);
+  }).catch(err => {
+    console.log(err);
+  });
   }
 }
 
