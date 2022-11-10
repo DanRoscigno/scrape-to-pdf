@@ -14,6 +14,8 @@ async function requestPage(url) {
   // @see https://bugs.chromium.org/p/chromium/issues/detail?id=753118
   await page.pdf({
     path: `${i}.pdf`,
+    // i is the counter, so an example filename would be 0342.pdf
+    path: (String(i).padStart(4, '0')).concat('.', 'pdf'), 
     format: 'letter',
   });
   i++;
