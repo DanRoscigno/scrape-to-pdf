@@ -48,7 +48,7 @@ Ghostscript:
 ```bash
 gs -sDEVICE=pdfwrite \
    -dCompatibilityLevel=1.5 \
-   -dPDFSETTINGS=/prepress \
+   -dPDFSETTINGS=/screen \
    -dNOPAUSE \
    -dQUIET \
    -dBATCH \
