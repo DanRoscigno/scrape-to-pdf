@@ -7,17 +7,21 @@ var i = 0;
 async function requestPage(url) {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
+  await page.setViewport({
+    width: 1920,
+    height: 1080
+  });
   await page.goto(url, {
     waitUntil: 'networkidle2',
   });
-  // page.pdf() is currently supported only in headless mode.
-  // @see https://bugs.chromium.org/p/chromium/issues/detail?id=753118
+
   await page.pdf({
-    path: `${i}.pdf`,
     // i is the counter, so an example filename would be 0342.pdf
     path: (String(i).padStart(4, '0')).concat('.', 'pdf'), 
-    format: 'letter',
+    //format: 'A4',
+    width: '1200', height: '2000'
   });
+
   i++;
 
   await browser.close();
