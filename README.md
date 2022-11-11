@@ -58,4 +58,16 @@ gs -sDEVICE=pdfwrite \
    -sOutputFile=joined-puppeteer.pdf \
    0*.pdf
 ```
-
+maybe?  What is -r150? -dPDFSETTINGS/screen sets text to 72DPI, so I think remove the -r150
+```bash
+gs -sDEVICE=pdfwrite \
+   -dCompatibilityLevel=1.5 \
+   -dPDFSETTINGS=/screen \
+   -dNOPAUSE \
+   -dQUIET \
+   -dBATCH \
+   -dDetectDuplicateImages \
+   -dCompressFonts=true \
+   -sOutputFile=joined-puppeteer.pdf \
+   0*.pdf
+```
