@@ -71,3 +71,72 @@ gs -sDEVICE=pdfwrite \
    -sOutputFile=joined-puppeteer.pdf \
    0*.pdf
 ```
+
+
+<details>
+  <summary>Expand to see Ghostscript info</summary>
+
+#### Ghostscript info
+
+https://gist.github.com/lkraider/f0888da30bc352f9d167dfa4f4fc8213
+
+```
+#!/bin/sh
+
+# It seems it's very hard to set resample output quality with Ghostscript.
+# So instead rely on `prepress` preset parameter to select a good /QFactor
+# and override the options we don't want from there.
+
+gs \
+  -o resampled.pdf \
+  -sDEVICE=pdfwrite \
+  -dPDFSETTINGS=/prepress \
+  `# font settings` \
+  -dSubsetFonts=true \
+  -dCompressFonts=true \
+  `# color format` \
+  -sProcessColorModel=DeviceRGB \
+  -sColorConversionStrategy=sRGB \
+  -sColorConversionStrategyForImages=sRGB \
+  -dConvertCMYKImagesToRGB=true \
+  `# image resample` \
+  -dDetectDuplicateImages=true \
+  -dDownsampleColorImages=true -dDownsampleGrayImages=true -dDownsampleMonoImages=true \
+  -dColorImageResolution=150 -dGrayImageResolution=150 -dMonoImageResolution=150 \
+  `# preset overrides` \
+  -dDoThumbnails=false \
+  -dCreateJobTicket=false \
+  -dPreserveEPSInfo=false \
+  -dPreserveOPIComments=false \
+  -dPreserveOverprintSettings=false \
+  -dUCRandBGInfo=/Remove \
+  -f input.pdf
+
+# Default settings for prepress profile:
+# $ gs -v
+# GPL Ghostscript 9.19 (2016-03-23)
+# Copyright (C) 2016 Artifex Software, Inc.  All rights reserved.
+# $ gs -q -dNODISPLAY -c ".distillersettings /prepress get {exch ==only ( ) print ===} forall quit" | sort
+# /AutoRotatePages /None
+# /CannotEmbedFontPolicy /Error
+# /ColorACSImageDict << /ColorTransform 1 /QFactor 0.15 /Blend 1 /HSamples [1 1 1 1] /VSamples [1 1 1 1] >>
+# /ColorConversionStrategy /LeaveColorUnchanged
+# /ColorImageDownsampleType /Bicubic
+# /ColorImageResolution 300
+# /CompatibilityLevel 1.5
+# /CreateJobTicket true
+# /DoThumbnails true
+# /EmbedAllFonts true
+# /GrayACSImageDict << /ColorTransform 1 /QFactor 0.15 /Blend 1 /HSamples [1 1 1 1] /VSamples [1 1 1 1] >>
+# /GrayImageDownsampleType /Bicubic
+# /GrayImageResolution 300
+# /MonoImageDownsampleType /Subsample
+# /MonoImageResolution 1200
+# /NeverEmbed []
+# /PreserveEPSInfo true
+# /PreserveOPIComments true
+# /PreserveOverprintSettings true
+# /UCRandBGInfo /Preserve
+```
+
+</details>
