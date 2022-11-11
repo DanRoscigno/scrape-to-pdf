@@ -19,7 +19,7 @@ async function requestPage(url) {
     // i is the counter, so an example filename would be 0342.pdf
     path: (String(i).padStart(4, '0')).concat('.', 'pdf'), 
     //format: 'A4',
-    width: '1200', height: '2000',
+    width: '1200', height: '1800',
     margin: {
       top: '80px',
       bottom: '60px'
