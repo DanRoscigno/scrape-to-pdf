@@ -43,16 +43,12 @@ node docusaurus-puppeteer-pdf.js
 ```
 
 #### Join the 600+ PDF files
-```bash
-pdfjam --outfile joined-puppeteer.pdf 0*pdf
-```
+Ghostscript:
 
-Note: `pdfjam` can be replaced with whatever you have that concatenates PDF files
-several references suggest `ghostscript`.  I will try with this command:
 ```bash
 gs -sDEVICE=pdfwrite \
    -dCompatibilityLevel=1.5 \
-   -dPDFSETTINGS=/default \
+   -dPDFSETTINGS=/prepress \
    -dNOPAUSE \
    -dQUIET \
    -dBATCH \
@@ -62,8 +58,4 @@ gs -sDEVICE=pdfwrite \
    -sOutputFile=joined-puppeteer.pdf \
    0*.pdf
 ```
-
-Things to try:
-- `-dPDFSETTINGS=/prepress` this is said to improve output
-- `-dPrinted=false` this is said to generate links that work within the PDF
 
