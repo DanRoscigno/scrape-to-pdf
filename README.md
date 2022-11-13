@@ -46,32 +46,20 @@ node docusaurus-puppeteer-pdf.js
 Ghostscript:
 
 ```bash
-gs -sDEVICE=pdfwrite \
+ gs -sDEVICE=pdfwrite \
    -dCompatibilityLevel=1.5 \
    -dPDFSETTINGS=/screen \
    -dNOPAUSE \
    -dQUIET \
    -dBATCH \
-   -dDetectDuplicateImages \
+   -dDetectDuplicateImages=true \
+   -dDownsampleColorImages=true -dDownsampleGrayImages=true -dDownsampleMonoImages=true \
+   -dColorImageResolution=175   -dGrayImageResolution=175   -dMonoImageResolution=175 \
    -dCompressFonts=true \
-   -r150 \
-   -sOutputFile=joined-puppeteer.pdf \
+   -dSubsetFonts=true \
+   -sOutputFile=joined-puppeteer-72DPI-images175DPI.pdf \
    0*.pdf
 ```
-maybe?  What is -r150? -dPDFSETTINGS/screen sets text to 72DPI, so I think remove the -r150
-```bash
-gs -sDEVICE=pdfwrite \
-   -dCompatibilityLevel=1.5 \
-   -dPDFSETTINGS=/screen \
-   -dNOPAUSE \
-   -dQUIET \
-   -dBATCH \
-   -dDetectDuplicateImages \
-   -dCompressFonts=true \
-   -sOutputFile=joined-puppeteer.pdf \
-   0*.pdf
-```
-
 
 <details>
   <summary>Expand to see Ghostscript info</summary>
