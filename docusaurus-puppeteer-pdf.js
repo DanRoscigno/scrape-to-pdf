@@ -5,7 +5,12 @@ const puppeteer = require('puppeteer');
 var i = 0;
 
 async function requestPage(url) {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    headless: 'new',
+    // `headless: true` (default) enables old Headless;
+    // `headless: 'new'` enables new Headless;
+    // `headless: false` enables "headful" mode.
+    });
   const page = await browser.newPage();
   await page.setViewport({
     width: 1920,

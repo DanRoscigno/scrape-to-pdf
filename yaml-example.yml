@@ -1,0 +1,10 @@
+files:
+    - file: 1.pdf
+      title: First file
+    - file: 2.pdf
+      title: Second file
+
+openleft: True
+title: Binder
+author: Tom de Geus
+output: binder.pdf

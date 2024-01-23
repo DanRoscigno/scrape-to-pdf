@@ -1,5 +1,21 @@
 # Generate PDFs from a Docusaurus 2.0 documentation site
 
+Note: Take a look at https://github.com/tdegeus/pdfcombine?tab=readme-ov-file#customise-meta-data-using-yaml-input-file
+
+This can be used to set the chapter names for the PDF file table of contents.
+
+Command to combine the PDF files without using the YAML above:
+
+```bash
+pdfcombine --title="Enterprise Edition" --author="StarRocks" 0*pdf
+```
+
+or if we create the yaml file, then
+
+```bash
+pdfcombine -y input.yaml
+```
+
 This depends on 
 [`docusaurus-prince-pdf`](https://github.com/signcl/docusaurus-prince-pdf) 
 to crawl the Docusaurus doc pages and generate a list of URLs.  The list of 
