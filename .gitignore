@@ -1,4 +1,5 @@
 *.pdf
 URLs.txt
 pdf/**
+combine.yaml
 
