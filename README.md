@@ -7,10 +7,27 @@ URLs is then processed with `docusaurus-puppeteer-pdf.js` (which uses
 [Puppeteer](https://pptr.dev/)) to generate PDFs from each URL, and then 
 finally `pdfjam` is used to combine all of the pages into a single PDF.
 
-#### Build your Docusaurus site and serve it
+## Onetime setup
+
+### Clone this repo
+
+Clone this repo to your machine.
+
+### Puppeteer
+
+Add `puppeteer` by running this command in the repo directory
+```bash
+yarn add puppeteer
+```
+
+### Install Prince
+
+See the [Prince](https://www.princexml.com/) site for the download. On macOS you would untar the archive and run `sudo ./install.sh`.
+ 
+## Build your Docusaurus site and serve it
 It seems to be necessary to run `yarn serve` rather than `yarn start` to have `docusaurus-prince-pdf` crawl the pages.  I expect that there is a CSS class difference between development and production modes of Docusaurus.
 
-#### Generate a list of pages (URLs)
+## Generate a list of pages (URLs)
 This command will crawl the docs and list the URLs in order:
 ```bash
 npx docusaurus-prince-pdf --list-only -u http://localhost:3000/docs/en/home --file URLs.txt
@@ -35,14 +52,14 @@ http://localhost:3000/docs/en/getting-started/example-datasets/github-events
 </details>
 
 
-#### docusaurus-puppeteer-pdf.js
+## docusaurus-puppeteer-pdf.js
 
 This takes the URLs.txt generated above and creates PDF files for each URL in the file.
 ```bash
 node docusaurus-puppeteer-pdf.js
 ```
 
-#### Join the 600+ PDF files
+## Join the 600+ PDF files
 Ghostscript:
 
 ```bash
@@ -64,7 +81,7 @@ Ghostscript:
 <details>
   <summary>Expand to see Ghostscript info</summary>
 
-#### Ghostscript info
+## Ghostscript info
 
 https://gist.github.com/lkraider/f0888da30bc352f9d167dfa4f4fc8213
 
