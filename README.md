@@ -62,7 +62,10 @@ http://localhost:3000/docs/developers/trace-tools/Trace/%
 
 ## docusaurus-puppeteer-pdf.js
 
-This takes the URLs.txt generated above and creates PDF files for each URL in the file.
+This takes the URLs.txt generated above and:
+1. creates PDF files for each URL in the file
+2. creates the file `combine.yaml` which contains the titles of the pages and filenames. This is the input to the next step/
+
 ```bash
 node docusaurus-puppeteer-pdf.js
 ```
