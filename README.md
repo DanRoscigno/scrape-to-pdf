@@ -20,7 +20,15 @@ Add `puppeteer` by running this command in the repo directory
 yarn add puppeteer
 ```
 
+### Install Ghostscript
+
+```bash
+brew install ghostscript
+```
+
 ### Install Prince
+
+Note: Probably not needed, as the process described here only uses the docusaurus-prince-pdf package to generate the URL list, not to generate the PDF file. The process described here uses Chrome Puppeteer to generate the PDF files, and Ghostscript to generate a single PDF file.
 
 See the [Prince](https://www.princexml.com/) site for the download. On macOS you would untar the archive and run `sudo ./install.sh`.
  
@@ -30,23 +38,23 @@ It seems to be necessary to run `yarn serve` rather than `yarn start` to have `d
 ## Generate a list of pages (URLs)
 This command will crawl the docs and list the URLs in order:
 ```bash
-npx docusaurus-prince-pdf --list-only -u http://localhost:3000/docs/en/home --file URLs.txt
+npx docusaurus-prince-pdf --list-only -u http://localhost:3000/docs/cover_pages/developers/ --file URLs.txt
 ```
 <details>
   <summary>Expand to see URLs.txt sample</summary>
 
-This is the file format, although the real output for the ClickHouse English docs site is about 655 lines:
+This is the file format, using the StarRocks developer docs as an example:
 ```bash
-http://localhost:3000/docs/en/quick-start
-http://localhost:3000/docs/en/getting-started/example-datasets/
-http://localhost:3000/docs/en/tutorial
-http://localhost:3000/docs/en/getting-started/example-datasets/uk-price-paid
-http://localhost:3000/docs/en/getting-started/example-datasets/nyc-taxi
-http://localhost:3000/docs/en/getting-started/example-datasets/cell-towers
-http://localhost:3000/docs/en/getting-started/example-datasets/amplab-benchmark
-http://localhost:3000/docs/en/getting-started/example-datasets/brown-benchmark
-http://localhost:3000/docs/en/getting-started/example-datasets/criteo
-http://localhost:3000/docs/en/getting-started/example-datasets/github-events
+http://localhost:3000/docs/developers/build-starrocks/Build_in_docker/
+http://localhost:3000/docs/developers/build-starrocks/build_starrocks_on_ubuntu/
+http://localhost:3000/docs/developers/build-starrocks/handbook/
+http://localhost:3000/docs/developers/code-style-guides/protobuf-guides/
+http://localhost:3000/docs/developers/code-style-guides/restful-api-standard/
+http://localhost:3000/docs/developers/code-style-guides/thrift-guides/
+http://localhost:3000/docs/developers/debuginfo/
+http://localhost:3000/docs/developers/development-environment/IDEA/
+http://localhost:3000/docs/developers/development-environment/ide-setup/
+http://localhost:3000/docs/developers/trace-tools/Trace/%
 ```
 
 </details>
