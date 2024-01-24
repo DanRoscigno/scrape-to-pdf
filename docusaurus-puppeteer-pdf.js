@@ -25,26 +25,17 @@ async function requestPage(url) {
     });
   const page = await browser.newPage();
   await page.setViewport({
-    width: 1920,
-    height: 1080
+    width: 700,
+    height: 1020
   });
   await page.goto(url, {
     waitUntil: 'networkidle2',
   });
 
-  await page.pdf({
-    // i is the counter, so an example filename would be 0342.pdf
-    path: (String(i).padStart(4, '0')).concat('.', 'pdf'), 
-    //format: 'A4',
-    width: '1200', height: '1800',
-    margin: {
-      top: '80px',
-      bottom: '60px'
-    },
-  });
-  /* write to yaml file:
+  await page.pdf({ format: 'A4' });
 
-  */
+  // Get the details to write the YAML file
+  // We need title and filename
   const pageTitle = await page.title();
   const pageDetails = '    - file: ' + (String(i).padStart(4, '0')).concat('.', 'pdf') + '\n      title: ' + pageTitle + '\n';
 
