@@ -25,8 +25,12 @@ async function requestPage(url) {
     });
   const page = await browser.newPage();
   await page.setViewport({
-    width: 700,
-    height: 1020
+    width: 1087, height: 968,
+    fitWindow: true,
+    deviceScaleFactor: 1.1,
+    mobile: false,
+    waitLoad: true,
+    waitNetworkIdle: true
   });
   await page.goto(url, {
     waitUntil: 'networkidle2',
