@@ -24,31 +24,35 @@ async function requestPage(url) {
     // `headless: false` enables "headful" mode.
     });
   const page = await browser.newPage();
-  await page.setViewport({
-    width: 1087, height: 968,
-    fitWindow: true,
-    deviceScaleFactor: 1.1,
-    mobile: false,
-    waitLoad: true,
-    waitNetworkIdle: true
+  await page.addStyleTag({
+  content: `
+  @page {
+      margin: 1in;
+    }
+    body {
+      margin: 0;
+    }
+  `,
   });
   await page.goto(url, {
     waitUntil: 'networkidle2',
   });
 
-  await page.pdf({ format: 'A4' });
+
+  const fileName = (String(i).padStart(4, '0')).concat('.', 'pdf');
+  await page.pdf({ path: fileName, });
 
   // Get the details to write the YAML file
   // We need title and filename
   const pageTitle = await page.title();
-  const pageDetails = '    - file: ' + (String(i).padStart(4, '0')).concat('.', 'pdf') + '\n      title: ' + pageTitle + '\n';
+  const pageDetails = '    - file: ' + fileName  + '\n      title: ' + pageTitle + '\n';
 
   fs.appendFile('./combine.yaml', pageDetails, err => {
     if (err) {
       console.error(err);
     } else {
       console.log(`Title is ${pageTitle}`);
-      console.log(`Filename is ` + (String(i).padStart(4, '0')).concat('.', 'pdf'));
+      console.log(`Filename is ` + fileName );
       // file written successfully
     }
   });

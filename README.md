@@ -38,7 +38,7 @@ It seems to be necessary to run `yarn serve` rather than `yarn start` to have `d
 ## Generate a list of pages (URLs)
 This command will crawl the docs and list the URLs in order:
 ```bash
-npx docusaurus-prince-pdf --list-only -u http://localhost:3000/docs/cover_pages/developers/ --file URLs.txt
+npx docusaurus-prince-pdf --list-only -u http://localhost:3000/docs/introduction/StarRocks_intro/ --file URLs.txt
 ```
 <details>
   <summary>Expand to see URLs.txt sample</summary>
