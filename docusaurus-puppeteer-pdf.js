@@ -38,9 +38,18 @@ async function requestPage(url) {
     waitUntil: 'networkidle2',
   });
 
-
   const fileName = (String(i).padStart(4, '0')).concat('.', 'pdf');
-  await page.pdf({ path: fileName, });
+
+  await page.pdf({
+    path: fileName,
+    format: 'A4',
+    margin: {
+      top: '80px',
+      bottom: '60px',
+      left: '60px',
+      right: '60px',
+    },
+  });
 
   // Get the details to write the YAML file
   // We need title and filename
