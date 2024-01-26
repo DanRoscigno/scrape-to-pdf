@@ -5,7 +5,7 @@ This depends on
 to crawl the Docusaurus doc pages and generate a list of URLs.  The list of 
 URLs is then processed with `docusaurus-puppeteer-pdf.js` (which uses 
 [Puppeteer](https://pptr.dev/)) to generate PDFs from each URL, and then 
-finally `pdfcombine` is used to combine all of the pages into a single PDF.
+finally [`pdfcombine`](https://github.com/tdegeus/pdfcombine.git) is used to combine all of the pages into a single PDF.
 
 ## Onetime setup
 
@@ -38,7 +38,7 @@ It seems to be necessary to run `yarn serve` rather than `yarn start` to have `d
 ## Generate a list of pages (URLs)
 This command will crawl the docs and list the URLs in order:
 ```bash
-npx docusaurus-prince-pdf --list-only -u http://localhost:3000/docs/introduction/StarRocks_intro/ --file URLs.txt
+npx docusaurus-prince-pdf --list-only -u http://localhost:3000/zh/docs/2.5/introduction/StarRocks_intro/ --file URLs.txt
 ```
 <details>
   <summary>Expand to see URLs.txt sample</summary>
@@ -76,3 +76,13 @@ node docusaurus-puppeteer-pdf.js
 pdfcombine -y combine.yaml
 ```
 
+## Customizing the doocs site for PDF
+
+Some things do not make sense to have in the PDF, like the Feedback form at the bottom of the page. Removing the Feedback form from the PDF can be done with CSS. This snippet is from `src/css/custom.css`:
+
+```css
+@media print {
+    .feedback_Ak7m {
+        display: none;
+    }
+```
