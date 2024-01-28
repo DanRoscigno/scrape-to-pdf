@@ -1,11 +1,9 @@
 # Generate PDFs from a Docusaurus v2 or v3 documentation site
 
-This depends on 
-[`docusaurus-prince-pdf`](https://github.com/signcl/docusaurus-prince-pdf) 
-to crawl the Docusaurus doc pages and generate a list of URLs.  The list of 
-URLs is then processed with `docusaurus-puppeteer-pdf.js` (which uses 
-[Puppeteer](https://pptr.dev/)) to generate PDFs from each URL, and then 
-finally [`pdfcombine`](https://github.com/tdegeus/pdfcombine.git) is used to combine all of the pages into a single PDF.
+Node.js code to:
+1. Generate the ordered list of URLs from documentation built with Docusaurus. This is done using code from [`docusaurus-prince-pdf`](https://github.com/signcl/docusaurus-prince-pdf)
+2. Open each page with [`puppeteer`](https://pptr.dev/) and save the content (without nav or the footer) as a PDF file
+3. Combine the individual PDF files using [Ghostscript](https://www.ghostscript.com/) and [`pdfcombine`](https://github.com/tdegeus/pdfcombine.git).
 
 ## Onetime setup
 
@@ -76,9 +74,9 @@ node docusaurus-puppeteer-pdf.js
 pdfcombine -y combine.yaml
 ```
 
-## Customizing the doocs site for PDF
+## Customizing the docs site for PDF
 
-Some things do not make sense to have in the PDF, like the Feedback form at the bottom of the page. Removing the Feedback form from the PDF can be done with CSS. This snippet is from `src/css/custom.css`:
+Some things do not make sense to have in the PDF, like the Feedback form at the bottom of the page. Removing the Feedback form from the PDF can be done with CSS. This snippet is added to the Docusaurus CSS file `src/css/custom.css`:
 
 ```css
 @media print {
