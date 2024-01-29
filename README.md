@@ -13,9 +13,9 @@ Clone this repo to your machine.
 
 ### Puppeteer
 
-Add `puppeteer` by running this command in the repo directory
+Add `puppeteer` and other dependencies by running this command in the repo directory
 ```bash
-yarn add puppeteer
+yarn install
 ```
 
 ### pdfcombine
@@ -71,7 +71,7 @@ node docusaurus-puppeteer-pdf.js
 ## Join the individual PDF files
 
 ```
-pdfcombine -y combine.yaml
+pdfcombine -y combine.yaml --title="StarRocks 2.5" -o StarRocks_2.5.pdf
 ```
 
 ## Customizing the docs site for PDF

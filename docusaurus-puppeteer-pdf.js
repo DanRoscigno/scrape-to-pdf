@@ -2,6 +2,7 @@
 const fs = require('node:fs');
 const readline = require('node:readline');
 const puppeteer = require('puppeteer');
+const scrollToBottom = require('scroll-to-bottomjs');
 var i = 0;
 
 async function requestPage(url) {
@@ -10,6 +11,7 @@ async function requestPage(url) {
   const page = await browser.newPage();
 
   await page.goto(url, { waitUntil: 'domcontentloaded', });
+  await page.evaluate(scrollToBottom);
 
   await page.pdf({
     path: fileName,
