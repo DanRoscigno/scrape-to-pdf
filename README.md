@@ -62,7 +62,7 @@ http://localhost:3000/docs/developers/trace-tools/Trace/%
 
 This takes the URLs.txt generated above and:
 1. creates PDF files for each URL in the file
-2. creates the file `combine.yaml` which contains the titles of the pages and filenames. This is the input to the next step/
+2. creates the file `combine.yaml` which contains the titles of the pages and filenames. This is the input to the next step.
 
 ```bash
 node docusaurus-puppeteer-pdf.js
@@ -79,8 +79,10 @@ pdfcombine -y combine.yaml --title="StarRocks 2.5" -o StarRocks_2.5.pdf
 Some things do not make sense to have in the PDF, like the Feedback form at the bottom of the page. Removing the Feedback form from the PDF can be done with CSS. This snippet is added to the Docusaurus CSS file `src/css/custom.css`:
 
 ```css
+/* When we generate PDF files we do not need to show the feedback widget. */
 @media print {
     .feedback_Ak7m {
         display: none;
     }
+}
 ```
