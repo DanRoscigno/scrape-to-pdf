@@ -78,6 +78,14 @@ node docusaurus-puppeteer-pdf.js
 pdfcombine -y combine.yaml --title="StarRocks 2.5" -o StarRocks_2.5.pdf
 ```
 
+> Note:
+>
+> You may see this message during the `pdfcombine` step:
+>
+> `GPL Ghostscript 10.03.1: Missing glyph CID=93, glyph=005d in the font IAAAAA+Menlo-Regular . The output PDF may fail with some viewers.`
+>
+> I have not had any complaints about the missing glyph from readers of the documents produced with this.
+
 ## Customizing the docs site for PDF
 
 Some things do not make sense to have in the PDF, like the Feedback form at the bottom of the page. Removing the Feedback form from the PDF can be done with CSS. This snippet is added to the Docusaurus CSS file `src/css/custom.css`:
