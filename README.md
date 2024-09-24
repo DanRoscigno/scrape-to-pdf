@@ -31,30 +31,40 @@ brew install ghostscript
 ```
 
 ## Build your Docusaurus site and serve it
+
 It seems to be necessary to run `yarn serve` rather than ~`yarn start`~ to have `docusaurus-prince-pdf` crawl the pages.  I expect that there is a CSS class difference between development and production modes of Docusaurus.
 
 If you are using the Docker scripts from [StarRocks](https://github.com/StarRocks/starrocks/tree/main/docs/docusaurus/scripts) then run `./scripts/docker-image.sh && ./scripts/docker-build.sh`
 
+## Get the URL of the "home" page
+
+Find the URL of the first page to crawl. It needs to be the landing, or home page of the site as the next step will generate a set of PDF files, one for each page of your site by extracting the landing page and looking for the "Next" button at the bottom right corner of each Docusaurus page. If you start from any page other than the first one, then you will only get a portion of the pages. For StarRocks documentation served using the `./scripts/docker-build.sh` script this will be:
+
+```bash
+http://localhost:3000/zh/docs/introduction/StarRocks_intro/
+```
+
 ## Generate a list of pages (URLs)
+
 This command will crawl the docs and list the URLs in order:
 ```bash
-npx docusaurus-prince-pdf --list-only -u http://localhost:3000/zh/docs/2.5/introduction/StarRocks_intro/ --file URLs.txt
+npx docusaurus-prince-pdf --list-only -u http://localhost:3000/zh/docs/introduction/StarRocks_intro/ --file URLs.txt
 ```
 <details>
   <summary>Expand to see URLs.txt sample</summary>
 
 This is the file format, using the StarRocks developer docs as an example:
 ```bash
-http://localhost:3000/docs/developers/build-starrocks/Build_in_docker/
-http://localhost:3000/docs/developers/build-starrocks/build_starrocks_on_ubuntu/
-http://localhost:3000/docs/developers/build-starrocks/handbook/
-http://localhost:3000/docs/developers/code-style-guides/protobuf-guides/
-http://localhost:3000/docs/developers/code-style-guides/restful-api-standard/
-http://localhost:3000/docs/developers/code-style-guides/thrift-guides/
-http://localhost:3000/docs/developers/debuginfo/
-http://localhost:3000/docs/developers/development-environment/IDEA/
-http://localhost:3000/docs/developers/development-environment/ide-setup/
-http://localhost:3000/docs/developers/trace-tools/Trace/%
+http://localhost:3000/zh/docs/developers/build-starrocks/Build_in_docker/
+http://localhost:3000/zh/docs/developers/build-starrocks/build_starrocks_on_ubuntu/
+http://localhost:3000/zh/docs/developers/build-starrocks/handbook/
+http://localhost:3000/zh/docs/developers/code-style-guides/protobuf-guides/
+http://localhost:3000/zh/docs/developers/code-style-guides/restful-api-standard/
+http://localhost:3000/zh/docs/developers/code-style-guides/thrift-guides/
+http://localhost:3000/zh/docs/developers/debuginfo/
+http://localhost:3000/zh/docs/developers/development-environment/IDEA/
+http://localhost:3000/zh/docs/developers/development-environment/ide-setup/
+http://localhost:3000/zh/docs/developers/trace-tools/Trace/%
 ```
 
 </details>
