@@ -14,11 +14,23 @@ Clone this repo to your machine.
 ### Puppeteer
 
 Add `puppeteer` and other dependencies by running this command in the repo directory
+
 ```bash
 yarn install
 ```
 
 ### pdfcombine
+
+`pdfcombine` should be installed in a Python 3 virtual environment.
+
+Setup the virtual environment from inside the `scrape-to-pdf` directory:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Install `pdfcombine`:
 
 ```bash
 pip3 install pdfcombine
@@ -47,9 +59,11 @@ http://localhost:3000/zh/docs/introduction/StarRocks_intro/
 ## Generate a list of pages (URLs)
 
 This command will crawl the docs and list the URLs in order:
+
 ```bash
 npx docusaurus-prince-pdf --list-only -u http://localhost:3000/zh/docs/introduction/StarRocks_intro/ --file URLs.txt
 ```
+
 <details>
   <summary>Expand to see URLs.txt sample</summary>
 
@@ -86,7 +100,8 @@ node docusaurus-puppeteer-pdf.js
 
 ## Join the individual PDF files
 
-```
+```bash
+source .venv/bin/activate
 pdfcombine -y combine.yaml --title="StarRocks 2.5" -o StarRocks_2.5.pdf
 ```
 
