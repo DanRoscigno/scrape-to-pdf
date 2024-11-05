@@ -11,6 +11,10 @@ Node.js code to:
 
 Clone this repo to your machine.
 
+### Node.js
+
+Use Node.js version 21.
+
 ### Puppeteer
 
 Add `puppeteer` and other dependencies by running this command in the repo directory
