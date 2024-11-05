@@ -11,6 +11,10 @@ Node.js code to:
 
 Clone this repo to your machine.
 
+### Node.js
+
+Use Node.js version 21.
+
 ### Puppeteer
 
 Add `puppeteer` and other dependencies by running this command in the repo directory
@@ -96,7 +100,7 @@ node docusaurus-puppeteer-pdf.js
 
 > Note:
 >
-> If you have any square brackets (`[`, `]`) in your titles `pdfcombine` will return an error in the next command. After the previous command finishes, edit the file `combine.yaml` and replace or remove the square brackets.
+> If you have any square brackets (`[`, `]`) or colons (`:`) in your titles `pdfcombine` will return an error in the next command. After the previous command finishes, edit the file `combine.yaml` and replace or remove the square brackets and colons.
 
 ## Join the individual PDF files
 
