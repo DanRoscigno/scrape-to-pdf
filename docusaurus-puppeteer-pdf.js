@@ -26,8 +26,9 @@ async function requestPage(url) {
 
   // Get the details to write the YAML file
   // We need title and filename
-  const pageTitle = await page.title();
-  const pageDetails = '    - file: ' + fileName  + '\n      title: ' + pageTitle + '\n';
+    const pageTitle = await page.title();
+    const cleanedTitle = pageTitle.replaceAll('\[', '').replaceAll('\]', '').replaceAll(':', '').replaceAll(' | StarRocks', '')
+  const pageDetails = `    - file: ${fileName}\n      title: ${cleanedTitle}\n`;
 
   fs.appendFile('./combine.yaml', pageDetails, err => {
     if (err) {
