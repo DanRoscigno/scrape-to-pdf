@@ -100,7 +100,9 @@ node docusaurus-puppeteer-pdf.js
 
 > Note:
 >
-> If you have any square brackets (`[`, `]`) or colons (`:`) in your titles `pdfcombine` will return an error in the next command. After the previous command finishes, edit the file `combine.yaml` and replace or remove the square brackets and colons.
+> Some characters in Markdown titles cause problems. The code has been written to remove square brackets (`[`, `]`) and colons (`:`) in titles as these were causing errors when running `pdfcombine` with the StarRocks docs. If you see errors when running `pdfcombine` you may have to edit `combine.yaml` and remove the offending characters.
+>
+> Open an issue in this repo and send your `combine.yaml` if you need help.
 
 ## Join the individual PDF files
 
