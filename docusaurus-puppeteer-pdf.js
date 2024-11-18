@@ -8,7 +8,7 @@ const PDFDocument = require('pdfkit');
 
 async function coverPage() {
     // Create a document
-    const doc = new PDFDocument();
+    const doc = new PDFDocument({size: 'A4'});
 
     doc.pipe(fs.createWriteStream('0000.pdf'));
 
