@@ -93,6 +93,24 @@ http://localhost:3000/zh/docs/developers/trace-tools/Trace/%
 This takes the URLs.txt generated above and:
 1. creates PDF files for each URL in the file
 2. creates the file `combine.yaml` which contains the titles of the pages and filenames. This is the input to the next step.
+3. Creates a cover page
+
+### Configuration
+
+There is a sample `.env` file, `.env.sample`, that you can copy to `.env`. This file specifies an image, title to place on the cover, and a Copyright notice. Here is the sample:
+
+```bash
+COVER_IMAGE=./StarRocks.png
+COVER_TITLE="StarRocks 3.3"
+COPYRIGHT="Copyright (c) 2024 The Linux Foundation"
+```
+
+- Copy `.env.sample` to `.env`
+- Edit the file as needed
+
+> Note:
+>
+> For the `COVER_IMAGE` Use a PNG or JPEG.
 
 ```bash
 node docusaurus-puppeteer-pdf.js
