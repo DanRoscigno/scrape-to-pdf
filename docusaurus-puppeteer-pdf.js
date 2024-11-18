@@ -3,7 +3,9 @@ const fs = require('node:fs');
 const readline = require('node:readline');
 const puppeteer = require('puppeteer');
 const scrollToBottom = require('scroll-to-bottomjs');
-var i = 0;
+
+// cover page is 0.pdf, so start `i` at 1
+var i = 1;
 
 async function requestPage(url) {
   const browser = await puppeteer.launch({ headless: 'new', });
