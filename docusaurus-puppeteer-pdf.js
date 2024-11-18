@@ -7,7 +7,7 @@ const scrollToBottom = require('scroll-to-bottomjs');
 const PDFDocument = require('pdfkit');
 //const fs = require('fs');
 
-async function coverPage() {
+function coverPage() {
     // Create a document
     const doc = new PDFDocument({size: 'A4'});
 
@@ -113,5 +113,6 @@ fs.writeFile('./combine.yaml', yamlHeader, err => {
     // file written successfully
   }
 });
+
 coverPage();
 processLineByLine();
