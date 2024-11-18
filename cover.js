@@ -4,19 +4,11 @@ const fs = require('fs');
 // Create a document
 const doc = new PDFDocument();
 
-// Pipe its output somewhere, like to a file or HTTP response
-// See below for browser usage
 doc.pipe(fs.createWriteStream('output.pdf'));
-
-// Embed a font, set the font size, and render some text
-doc
-  //.font('fonts/PalatinoBold.ttf')
-  .fontSize(25)
-  //.text('Some text with an embedded font!', 100, 100);
-  .text('StarRocks version 3.3', 100, 100);
 
 doc
   .save()
+  // position logo over 70 and down 30
   .translate(70, 30)
   .path('M16.17 27.33C12.17 24.06 7.81 20.45 5.48 18.52L3.85 17.18C2.72 16.25 1.85 14.6 3.75 13.47C4.58 13 18.78 4.83 24 1.8C24.9101 1.26745 25.9455 0.986755 27 0.986755C28.0545 0.986755 29.0899 1.26745 30 1.8L40 7.59C40.1808 7.69315 40.3312 7.8423 40.4357 8.02232C40.5403 8.20234 40.5954 8.40682 40.5954 8.615C40.5954 8.82319 40.5403 9.02767 40.4357 9.20769C40.3312 9.38771 40.1808 9.53686 40 9.64L16.52 23.11C16.1583 23.317 15.8525 23.6089 15.6287 23.9604C15.4049 24.312 15.27 24.7127 15.2356 25.128C15.2011 25.5433 15.2682 25.9607 15.431 26.3443C15.5938 26.7279 15.8474 27.0662 16.17 27.33Z')
   .fillAndStroke("#FABF00", "#FABF00")
@@ -28,8 +20,12 @@ doc
   .path('M32 25.57L41.52 11C41.8524 10.4935 42.3662 10.1336 42.9557 9.99407C43.5453 9.85458 44.1659 9.94617 44.69 10.25L51 13.9C51.9094 14.418 52.6658 15.1671 53.1927 16.0715C53.7195 16.9759 53.998 18.0034 54 19.05V43.37C53.9996 44.2947 53.7833 45.2065 53.3684 46.0329C52.9535 46.8593 52.3514 47.5774 51.61 48.13C53.31 46.82 52.61 45.35 51.51 44.41L32.43 28.69C31.9886 28.3129 31.701 27.7869 31.6218 27.2118C31.5425 26.6367 31.6771 26.0525 32 25.57Z')
   .fillAndStroke("#338393", "#338393")
 
+doc
+  .fontSize(25)
+  .fillColor("black")
+  // position text over 0 and down 40 (relative to image)
+  .text('StarRocks version 3.3', 0, 90);
+
+
 // Finalize PDF file
 doc.end();
-
-
-//</svg>
