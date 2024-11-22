@@ -65,6 +65,7 @@ http://localhost:3000/zh/docs/introduction/StarRocks_intro/
 This command will crawl the docs and list the URLs in order:
 
 ```bash
+npm install -g docusaurus-prince-pdf
 npx docusaurus-prince-pdf --list-only -u http://localhost:3000/zh/docs/introduction/StarRocks_intro/ --file URLs.txt
 ```
 
