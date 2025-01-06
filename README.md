@@ -1,134 +1,164 @@
-# Generate PDFs from a Docusaurus v2 or v3 documentation site
+# Generate PDFs of Docusaurus docs
 
-Node.js code to:
-1. Generate the ordered list of URLs from documentation built with Docusaurus. This is done using code from [`docusaurus-prince-pdf`](https://github.com/signcl/docusaurus-prince-pdf)
-2. Open each page with [`puppeteer`](https://pptr.dev/) and save the content (without nav or the footer) as a PDF file
-3. Combine the individual PDF files using [Ghostscript](https://www.ghostscript.com/) and [`pdfcombine`](https://github.com/tdegeus/pdfcombine.git).
-
-## Onetime setup
-
-### Clone this repo
+## Clone this repo
 
 Clone this repo to your machine.
 
-### Node.js
+## Choose the branch that you want a PDF for
 
-Use Node.js version 21.
-
-### Puppeteer
-
-Add `puppeteer` and other dependencies by running this command in the repo directory
+When you launch the PDF conversion environment, it will use the active branch. So, if you want a PDF for version x:
 
 ```bash
-yarn install
+git switch branch-x
 ```
 
-### pdfcombine
+## Launch the conversion environment
 
-`pdfcombine` should be installed in a Python 3 virtual environment.
+The conversion process uses Docker Compose. Launch the environment by running the following command from the `scrape-to-pdf/PDF/` directory.
 
-Setup the virtual environment from inside the `scrape-to-pdf` directory:
+The `--wait-timeout 400` will give the services 400 seconds to get to a healthy state. This is to allow both Docusaurus and Gotenberg to become ready to handle requests. On my machine it takes about 60 seconds for Docusaurus to build the docs and start serving them.
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
+cd scrape-to-pdf/PDF/
+docker compose up --detach --wait --wait-timeout 400 --build
 ```
 
-Install `pdfcombine`:
-
-```bash
-pip3 install pdfcombine
-```
-
-### Install Ghostscript
-
-```bash
-brew install ghostscript
-```
-
-## Build your Docusaurus site and serve it
-
-It seems to be necessary to run `yarn serve` rather than ~`yarn start`~ to have `docusaurus-prince-pdf` crawl the pages.  I expect that there is a CSS class difference between development and production modes of Docusaurus.
-
-If you are using the Docker scripts from [StarRocks](https://github.com/StarRocks/starrocks/tree/main/docs/docusaurus/scripts) then run `./scripts/docker-image.sh && ./scripts/docker-build.sh`
+> Tip
+>
+> All of the `docker compose` commands must be run from the `scrape-to-pdf/PDF/` directory.
 
 ## Get the URL of the "home" page
 
-Find the URL of the first page to crawl. It needs to be the landing, or home page of the site as the next step will generate a set of PDF files, one for each page of your site by extracting the landing page and looking for the "Next" button at the bottom right corner of each Docusaurus page. If you start from any page other than the first one, then you will only get a portion of the pages. For StarRocks documentation served using the `./scripts/docker-build.sh` script this will be:
+### Check to see if Docusaurus is serving the pages
+
+From the `PDF` directory check the logs of the `docusaurus311` service:
 
 ```bash
-http://localhost:3000/zh/docs/introduction/StarRocks_intro/
+docker compose logs -f docusaurus311
 ```
 
-## Generate a list of pages (URLs)
-
-This command will crawl the docs and list the URLs in order:
+When Docusaurus is ready you will see this line at the end of the log output:
 
 ```bash
-npm install -g docusaurus-prince-pdf
-npx docusaurus-prince-pdf --list-only -u http://localhost:3000/zh/docs/introduction/StarRocks_intro/ --file URLs.txt
+docusaurus311-1  | [SUCCESS] Serving "build" directory at: http://0.0.0.0:3000/
 ```
 
-<details>
-  <summary>Expand to see URLs.txt sample</summary>
+Stop watching the logs with CTRL-c
 
-This is the file format, using the StarRocks developer docs as an example:
-```bash
-http://localhost:3000/zh/docs/developers/build-starrocks/Build_in_docker/
-http://localhost:3000/zh/docs/developers/build-starrocks/build_starrocks_on_ubuntu/
-http://localhost:3000/zh/docs/developers/build-starrocks/handbook/
-http://localhost:3000/zh/docs/developers/code-style-guides/protobuf-guides/
-http://localhost:3000/zh/docs/developers/code-style-guides/restful-api-standard/
-http://localhost:3000/zh/docs/developers/code-style-guides/thrift-guides/
-http://localhost:3000/zh/docs/developers/debuginfo/
-http://localhost:3000/zh/docs/developers/development-environment/IDEA/
-http://localhost:3000/zh/docs/developers/development-environment/ide-setup/
-http://localhost:3000/zh/docs/developers/trace-tools/Trace/%
-```
+### Find the initial URL
 
-</details>
+First open the docs by launching a browser to the URL at the end of the log output, which should be [http://0.0.0.0:3000/](http://0.0.0.0:3000/).
 
+If you are not on the **Tutorial Intro** page click the `Tutorial` link in the header.
 
-## docusaurus-puppeteer-pdf.js
+Copy the URL of the starting page of the documentation that you would like to generate a PDF for.
 
-This takes the URLs.txt generated above and:
-1. creates PDF files for each URL in the file
-2. creates the file `combine.yaml` which contains the titles of the pages and filenames. This is the input to the next step.
+> The URL you will use is probably `http://0.0.0.0:3000/docs/intro/`
+
+Save the URL.
+
+## Open a shell in the PDF build environment
+
+Launch a shell from the `scrape-to-pdf/PDF/` directory:
 
 ```bash
-node docusaurus-puppeteer-pdf.js
+docker compose exec -ti docusaurus311 bash
 ```
 
-> Note:
->
-> Some characters in Markdown titles cause problems. The code has been written to remove square brackets (`[`, `]`) and colons (`:`) in titles as these were causing errors when running `pdfcombine` with the StarRocks docs. If you see errors when running `pdfcombine` you may have to edit `combine.yaml` and remove the offending characters.
->
-> Open an issue in this repo and send your `combine.yaml` if you need help.
+and `cd` into the `PDF` directory:
+
+```bash
+cd /app/PDF
+```
+
+## Crawl the docs and generate the PDFs
+
+Run the commands:
+
+```bash
+yarn install
+node generatePdf.js http://localhost:3000/docs/intro
+```
 
 ## Join the individual PDF files
 
+> Tip
+>
+> Change the `myDocs.pdf` in the command below to the correct version.
+
 ```bash
-source .venv/bin/activate
-pdfcombine -y combine.yaml --title="StarRocks 2.5" -o StarRocks_2.5.pdf
+cd ../PDFoutput
+pdftk myDocsCover.pdf 00*pdf output myDocs.pdf
 ```
 
-> Note:
->
-> You may see this message during the `pdfcombine` step:
->
-> `GPL Ghostscript 10.03.1: Missing glyph CID=93, glyph=005d in the font IAAAAA+Menlo-Regular . The output PDF may fail with some viewers.`
->
-> I have not had any complaints about the missing glyph from readers of the documents produced with this.
+## Finished file
 
-## Customizing the docs site for PDF
+The individual PDF files and the combined file will be on your local machine in `scrape-to-pdf/PDFoutput/`
 
-Some things do not make sense to have in the PDF, like the Feedback form at the bottom of the page. Removing the Feedback form from the PDF can be done with CSS. This snippet is added to the Docusaurus CSS file `src/css/custom.css`:
+> Please:
+>
+> In your PDF viewer open the **Table of Contents** (on a mac using Apple Preview, use the **View** menu) and verify that the table of contents matches what you expect.
 
-```css
-/* When we generate PDF files we do not need to show the feedback widget. */
-@media print {
-    .feedback_Ak7m {
-        display: none;
-    }
+## Shutdown
+
+When you are done:
+- Exit the shell in the container
+- Run `docker compose down`
+
+## Advanced details
+
+### Check the status
+
+> Tip
+>
+> If you do not have `jq` installed just run `docker compose ps`. The ouput using `jq` is easier to read, but you can get by with the more basic command.
+
+```bash
+docker compose ps --format json | jq '{Service: .Service, State: .State, Status: .Status}'
+```
+
+Expected output:
+
+```bash
+{
+  "Service": "docusaurus311",
+  "State": "running",
+  "Status": "Up 14 minutes"
+}
+{
+  "Service": "gotenbergAPI",
+  "State": "running",
+  "Status": "Up 2 hours (healthy)"
 }
 ```
+
+### Customizing the docs site for PDF
+
+Gotenberg generates the PDF files without the side navigation, header, and footer as these components are not displayed when the `media` is set to `print`. In our docs it does not make sense to have the edit URLs or breadcrumbs show. These are filtered out using CSS by adding `display: none` to the classes of these objects when `@media print`.
+
+Removing the edit URLs and breadcrumbs from the PDF can be done with CSS. This snippet is added to the Docusaurus CSS file `website/src/css/custom.css`:
+
+```css
+/* When we generate PDF files we do not need to show the edit this page link or the breadcrumbs. */
+@media print {
+    .theme-doc-footer-edit-meta-row {
+        display: none;
+    };
+    .breadcrumbs {
+        display: none;
+    };
+}
+```
+
+## Links
+
+Node.js code to:
+1. Generate the ordered list of URLs from the documentation. This is done using code from `docusaurus-prince-pdf`.
+2. Convert each page to a PDF file with Gotenberg.
+3. Combine the individual PDF files using Ghostscript and `pdftk-java`.
+
+
+- [`docusaurus-prince-pdf`](https://github.com/signcl/docusaurus-prince-pdf)
+- [`Gotenberg`](https://pptr.dev/)
+- [`pdftk-java`](https://gitlab.com/pdftk-java/pdftk)
+- [Ghostscript](https://www.ghostscript.com/)

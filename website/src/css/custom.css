@@ -28,3 +28,13 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* When we generate PDF files we do not need to show the edit this page link or the breadcrumbs. */
+@media print {
+    .theme-doc-footer-edit-meta-row {
+        display: none;
+    };
+    .breadcrumbs {
+        display: none;
+    };
+}
