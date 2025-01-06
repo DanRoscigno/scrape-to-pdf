@@ -65,12 +65,6 @@ Launch a shell from the `scrape-to-pdf/PDF/` directory:
 docker compose exec -ti docusaurus311 bash
 ```
 
-and `cd` into the `PDF` directory:
-
-```bash
-cd /app/PDF
-```
-
 ## Crawl the docs and generate the PDFs
 
 Run the commands:
