@@ -60,6 +60,20 @@ const config = {
     ],
   ],
 
+  plugins: [
+    [
+      'docusaurus-plugin-papersaurus-flexx',
+      {
+        keepDebugHtmls: false,
+        sidebarNames: ['tutorialSidebar'],
+        addDownloadButton: true,
+        autoBuildPdfs: true,
+        ignoreDocs: ['licenses'],
+        author: 'Dan the Man'
+      },
+    ],
+  ],
+
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
