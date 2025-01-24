@@ -30,7 +30,7 @@ function coverPage() {
     // Finalize PDF file
     doc.end();
 
-    const pageDetails = `    - file: 0000.pdf\n      title: StarRocks\n`;
+    const pageDetails = `    - file: 0000.pdf\n      title: ` + process.env.COVER_TITLE + `\n`;
     fs.appendFile('./combine.yaml', pageDetails, err => {
         if (err) {
             console.error(err);
@@ -67,14 +67,14 @@ async function requestPage(url) {
   // Get the details to write the YAML file
   // We need title and filename
     const pageTitle = await page.title();
-    const cleanedTitle = pageTitle.replaceAll('\[', '').replaceAll('\]', '').replaceAll(':', '').replaceAll(' | StarRocks', '')
+    const cleanedTitle = pageTitle.replaceAll('\[', '').replaceAll('\]', '').replaceAll(':', '').replaceAll(' | StarRocks', '').replaceAll(' | CelerData', '')
   const pageDetails = `    - file: ${fileName}\n      title: ${cleanedTitle}\n`;
 
   fs.appendFile('./combine.yaml', pageDetails, err => {
     if (err) {
       console.error(err);
     } else {
-      console.log(`Title is ${pageTitle}`);
+      console.log(`Title is ${cleanedTitle}`);
       console.log(`Filename is ` + fileName );
       // file written successfully
     }
