@@ -46,7 +46,7 @@ function coverPage() {
 var i = 1;
 
 async function requestPage(url) {
-  const browser = await puppeteer.launch({ headless: 'new', });
+  const browser = await puppeteer.launch({ headless: 'shell', });
   const fileName = (String(i).padStart(4, '0')).concat('.', 'pdf');
   const page = await browser.newPage();
 
@@ -54,6 +54,7 @@ async function requestPage(url) {
   await page.evaluate(scrollToBottom);
 
   await page.pdf({
+    outline: true,
     path: fileName,
     format: 'A4',
     margin: {
