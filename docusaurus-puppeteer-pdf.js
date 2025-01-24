@@ -57,10 +57,10 @@ async function requestPage(url) {
     path: fileName,
     format: 'A4',
     margin: {
-      top: '60px',
-      bottom: '60px',
-      left: '60px',
-      right: '60px',
+      top: '0.5in',
+      bottom: '0.5in',
+      left: '0.5in',
+      right: '0.5in',
     },
   });
 
