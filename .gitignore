@@ -1,6 +1,8 @@
 .venv
-00*.pdf
+.env
+*.pdf
 URLs.txt
+pdf/**
 combine.yaml
 .DS_Store
 node_modules/**

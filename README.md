@@ -1,100 +1,145 @@
+Node.js code to:
+1. Generate the ordered list of URLs from documentation built with Docusaurus. This is done using code from [`docusaurus-prince-pdf`](https://github.com/signcl/docusaurus-prince-pdf)
+2. Open each page with [`puppeteer`](https://pptr.dev/) and save the content (without nav or the footer) as a PDF file
+3. Combine the individual PDF files using [Ghostscript](https://www.ghostscript.com/) and [`pdfcombine`](https://github.com/tdegeus/pdfcombine.git).
 
-## Install a sample Docusaurus site
+## Onetime setup
+
+### Clone this repo
+
+Clone this repo to your machine.
+
+### Node.js
+
+Use Node.js version 21.
+
+### Puppeteer
+
+Add `puppeteer` and other dependencies by running this command in the repo directory
+
+```bash
+yarn install
+```
+
+### pdfcombine
+
+`pdfcombine` should be installed in a Python 3 virtual environment.
+
+Setup the virtual environment from inside the `scrape-to-pdf` directory:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Install `pdfcombine`:
+
+```bash
+pip3 install pdfcombine
+```
+
+### Install Ghostscript
+
+```bash
+brew install ghostscript
+```
+
+## Build your Docusaurus site and serve it
+
+It seems to be necessary to run `yarn serve` rather than ~`yarn start`~ to have `docusaurus-prince-pdf` crawl the pages.  I expect that there is a CSS class difference between development and production modes of Docusaurus.
+
+If you are using the Docker scripts from [StarRocks](https://github.com/StarRocks/starrocks/tree/main/docs/docusaurus/scripts) then run `./scripts/docker-image.sh && ./scripts/docker-build.sh`
+
+## Get the URL of the "home" page
+
+Find the URL of the first page to crawl. It needs to be the landing, or home page of the site as the next step will generate a set of PDF files, one for each page of your site by extracting the landing page and looking for the "Next" button at the bottom right corner of each Docusaurus page. If you start from any page other than the first one, then you will only get a portion of the pages. For StarRocks documentation served using the `./scripts/docker-build.sh` script this will be:
+
+```bash
+http://localhost:3000/zh/docs/introduction/StarRocks_intro/
+```
+
+## Generate a list of pages (URLs)
+
+This command will crawl the docs and list the URLs in order:
+
+```bash
+npx docusaurus-prince-pdf --list-only -u http://localhost:3000/zh/docs/introduction/StarRocks_intro/ --file URLs.txt
+```
+
+<details>
+  <summary>Expand to see URLs.txt sample</summary>
+
+This is the file format, using the StarRocks developer docs as an example:
+```bash
+http://localhost:3000/zh/docs/developers/build-starrocks/Build_in_docker/
+http://localhost:3000/zh/docs/developers/build-starrocks/build_starrocks_on_ubuntu/
+http://localhost:3000/zh/docs/developers/build-starrocks/handbook/
+http://localhost:3000/zh/docs/developers/code-style-guides/protobuf-guides/
+http://localhost:3000/zh/docs/developers/code-style-guides/restful-api-standard/
+http://localhost:3000/zh/docs/developers/code-style-guides/thrift-guides/
+http://localhost:3000/zh/docs/developers/debuginfo/
+http://localhost:3000/zh/docs/developers/development-environment/IDEA/
+http://localhost:3000/zh/docs/developers/development-environment/ide-setup/
+http://localhost:3000/zh/docs/developers/trace-tools/Trace/%
+```
+
+</details>
+
+
+## docusaurus-puppeteer-pdf.js
+
+This takes the URLs.txt generated above and:
+1. creates PDF files for each URL in the file
+2. creates the file `combine.yaml` which contains the titles of the pages and filenames. This is the input to the next step.
+3. Creates a cover page
+
+### Configuration
+
+There is a sample `.env` file, `.env.sample`, that you can copy to `.env`. This file specifies an image, title to place on the cover, and a Copyright notice. Here is the sample:
+
+```bash
+COVER_IMAGE=./StarRocks.png
+COVER_TITLE="StarRocks 3.3"
+COPYRIGHT="Copyright (c) 2024 The Linux Foundation"
+```
+
+- Copy `.env.sample` to `.env`
+- Edit the file as needed
 
 > Note:
 >
-> I am using version 3.1.1 of Docusaurus as that matches what I run in production. To upgrade beyond 3.1.1 I would need to update some of the Docusaurus packages that I have swizzled, and I do not have the time to do that.
+> For the `COVER_IMAGE` Use a PNG or JPEG.
 
 ```bash
-npx create-docusaurus@3.1.1 website classic
+node docusaurus-puppeteer-pdf.js
 ```
 
-## Add `docusaurus-plugin-papersaurus-flexx`
+## Customizing the docs site for PDF
 
-> Note:
->
-> I am using `docusaurus-plugin-papersaurus-flexx` instead of the old `docusaurus-plugin-papersaurus` as I am using Docusaurus v3. [Repo](https://www.npmjs.com/package/docusaurus-plugin-papersaurus-flexx)
+Some things do not make sense to have in the PDF, like the Feedback form at the bottom of the page. Removing the Feedback form from the PDF can be done with CSS. This snippet is added to the Docusaurus CSS file `src/css/custom.css`:
 
+```css
+/* When we generate PDF files:
+ 
+ - avoid breaks in the middle of:
+   - code blocks
+   - admonitions (notes, tips, etc.)
+
+ - we do not need to show the:
+   - feedback widget.
+   - edit this page
+   - breadcrumbs
+
+ */
+@media print {
+  .theme-code-block , .theme-admonition {
+     break-inside: avoid;
+  }
+}
+
+@media print {
+    .theme-edit-this-page , .feedback_Ak7m , .theme-doc-breadcrumbs   {
+        display: none;
+    }
+}
 ```
-cd website
-yarn add docusaurus-plugin-papersaurus-flexx
-```
-
-## Configure
-
-Add this to `docusaurus.config.js`
-
-> Tip
-> 
-> I always add `plugins: []` just above `themeConfig: []`
-
-```js
-    plugins: [
-    [
-      'docusaurus-plugin-papersaurus-flexx',
-      {
-        keepDebugHtmls: false,
-        sidebarNames: ['tutorialSidebar'],
-        addDownloadButton: true,
-        autoBuildPdfs: true,
-        ignoreDocs: ['licenses'],
-        author: 'Dan the Man'
-      },
-    ],
-  ],
-```
-
-All of the options for the plugin are documented at [npmjs](https://www.npmjs.com/package/docusaurus-plugin-papersaurus-flexx)
-
-> Note:
->
-> The author, Alberto Carrillo, has not updated the documentation at the npm site, but his fork of the project has been updated for Docusaurus 3.4.
-
-## Build
-
-```bash
-cd website
-yarn build
-```
-
-## PDFs
-
-```bash
-find build -name "*pdf"
-```
-
-You will see a list of PDF files under `build/pdfs/`. There will be a PDF for each of the pages associated with the sidebar ID specified in the config (I specified the `tutorialSidebar`), and a PDF containing all of the pages. When using the sample Docusaurus site this will be `docusaurus.pdf`:
-
-```bash
-build/pdfs/docs/tutorial---basics-deploy-your-site.pdf
-build/pdfs/docs/tutorial---basics-congratulations.pdf
-build/pdfs/docs/tutorial---basics.pdf
-build/pdfs/docs/tutorial---basics-create-a-document.pdf
-build/pdfs/docs/intro.pdf
-build/pdfs/docs/docusaurus.pdf
-build/pdfs/docs/tutorial---extras-translate-your-site.pdf
-build/pdfs/docs/tutorial---extras-manage-docs-versions.pdf
-build/pdfs/docs/tutorial---basics-markdown-features.pdf
-build/pdfs/docs/tutorial---extras.pdf
-build/pdfs/docs/tutorial---basics-create-a-page.pdf
-build/pdfs/docs/tutorial---basics-create-a-blog-post.pdf
-```
-
-## Sample
-
-If you would like to see a sample PDF you can follow the steps above, or you can download the PDF file in this repo.
-
-> Note:
->
-> Download the file, as if you open it in a PDF viewer you will be able to navigate through the file using the table of contents at the front of the file. The PDF rendered from GitHub does not include the links.
-
-[Download PDF](https://raw.githubusercontent.com/DanRoscigno/scrape-to-pdf/refs/heads/main/docusaurus.pdf)
-
-## Adapt for your Docusaurus site
-
-You should be able to add this plugin to any Docusaurus v3 site by performing the `yarn add` step and configuring the plugin in `docusaurus.config.js`. Thsi will result in PDFs being generated every time you build your documentation if you use the configuration provided in this README. See the options at [npmjs](https://www.npmjs.com/package/docusaurus-plugin-papersaurus-flexx) to customize the process and output.
-
-### Control when a PDF is built
-
-By setting `autoBuildPdfs` to `false` you can control when a PDF is built with an environment variable. After setting `autoBuildPdfs` to false, PDFs will only be built when you set the environment variable `BUILD_PDF` to true and run a Docusaurus build.
-
