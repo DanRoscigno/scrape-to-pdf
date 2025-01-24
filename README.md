@@ -142,10 +142,40 @@ pdfcombine -y combine.yaml --title="StarRocks 2.5" -o StarRocks_2.5.pdf
 Some things do not make sense to have in the PDF, like the Feedback form at the bottom of the page. Removing the Feedback form from the PDF can be done with CSS. This snippet is added to the Docusaurus CSS file `src/css/custom.css`:
 
 ```css
-/* When we generate PDF files we do not need to show the feedback widget. */
+/* When we generate PDF files:
+ 
+ - avoid breaks in the middle of:
+   - code blocks
+   - admonitions (notes, tips, etc.)
+
+ - we do not need to show the:
+   - feedback widget.
+   - edit this page
+   - breadcrumbs
+
+ */
+@media print {
+  .theme-code-block , .theme-admonition {
+     break-inside: avoid;
+  }
+}
+
+@media print {
+    .theme-edit-this-page , .feedback_Ak7m , .theme-doc-breadcrumbs   {
+        display: none;
+    }
+}
+/*
 @media print {
     .feedback_Ak7m {
         display: none;
     }
 }
+
+@media print {
+  .theme-doc-breadcrumbs {
+     display: none;
+  }
+}
+*/
 ```
