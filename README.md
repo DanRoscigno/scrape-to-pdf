@@ -1,5 +1,3 @@
-# Generate PDFs from a Docusaurus v2 or v3 documentation site
-
 Node.js code to:
 1. Generate the ordered list of URLs from documentation built with Docusaurus. This is done using code from [`docusaurus-prince-pdf`](https://github.com/signcl/docusaurus-prince-pdf)
 2. Open each page with [`puppeteer`](https://pptr.dev/) and save the content (without nav or the footer) as a PDF file
@@ -116,27 +114,6 @@ COPYRIGHT="Copyright (c) 2024 The Linux Foundation"
 node docusaurus-puppeteer-pdf.js
 ```
 
-> Note:
->
-> Some characters in Markdown titles cause problems. The code has been written to remove square brackets (`[`, `]`) and colons (`:`) in titles as these were causing errors when running `pdfcombine` with the StarRocks docs. If you see errors when running `pdfcombine` you may have to edit `combine.yaml` and remove the offending characters.
->
-> Open an issue in this repo and send your `combine.yaml` if you need help.
-
-## Join the individual PDF files
-
-```bash
-source .venv/bin/activate
-pdfcombine -y combine.yaml --title="StarRocks 2.5" -o StarRocks_2.5.pdf
-```
-
-> Note:
->
-> You may see this message during the `pdfcombine` step:
->
-> `GPL Ghostscript 10.03.1: Missing glyph CID=93, glyph=005d in the font IAAAAA+Menlo-Regular . The output PDF may fail with some viewers.`
->
-> I have not had any complaints about the missing glyph from readers of the documents produced with this.
-
 ## Customizing the docs site for PDF
 
 Some things do not make sense to have in the PDF, like the Feedback form at the bottom of the page. Removing the Feedback form from the PDF can be done with CSS. This snippet is added to the Docusaurus CSS file `src/css/custom.css`:
@@ -165,17 +142,4 @@ Some things do not make sense to have in the PDF, like the Feedback form at the 
         display: none;
     }
 }
-/*
-@media print {
-    .feedback_Ak7m {
-        display: none;
-    }
-}
-
-@media print {
-  .theme-doc-breadcrumbs {
-     display: none;
-  }
-}
-*/
 ```
