@@ -29,17 +29,9 @@ yarn install
 brew install pdftk
 ```
 
-### Install Ghostscript
+## Use
 
-> Note:
->
-> I do not know if this is needed, possibly pdftk does not depend on Ghostscript. I have not removed it as I need it for other things. You can try skipping this step. Please let me know if you succeed without it.
-
-```bash
-brew install ghostscript
-```
-
-## Configuration
+### Configuration
 
 There is a sample `.env` file, `.env.sample`, that you can copy to `.env`. This file specifies an image, title to place on the cover, and a Copyright notice. Here is the sample:
 
@@ -56,13 +48,13 @@ COPYRIGHT="Copyright (c) 2024 The Linux Foundation"
 >
 > For the `COVER_IMAGE` Use a PNG or JPEG.
 
-## Build your Docusaurus site and serve it
+### Build your Docusaurus site and serve it
 
 It seems to be necessary to run `yarn serve` rather than ~`yarn start`~ to have `docusaurus-prince-pdf` crawl the pages. I expect that there is a CSS class difference between development and production modes of Docusaurus.
 
 If you are using the Docker scripts from [StarRocks](https://github.com/StarRocks/starrocks/tree/main/docs/docusaurus/scripts) then run `./scripts/docker-image.sh && ./scripts/docker-build.sh`
 
-## Get the URL of the "home" page
+### Get the URL of the "home" page
 
 Find the URL of the first page to crawl. It needs to be the landing, or home page of the site as the next step will generate a set of PDF files, one for each page of your site by extracting the landing page and looking for the "Next" button at the bottom right corner of each Docusaurus page. If you start from any page other than the first one, then you will only get a portion of the pages. For StarRocks documentation served using the `./scripts/docker-build.sh` script this will be:
 
@@ -70,7 +62,7 @@ Find the URL of the first page to crawl. It needs to be the landing, or home pag
 http://localhost:3000/zh/docs/introduction/StarRocks_intro/
 ```
 
-## Generate a list of pages (URLs)
+### Generate a list of pages (URLs)
 
 This command will crawl the docs and list the URLs in order:
 
@@ -100,9 +92,9 @@ http://localhost:3000/zh/docs/developers/trace-tools/Trace/%
 </details>
 
 
-## Generate PDF files for each Docusaurus page
+### Generate PDF files for each Docusaurus page
 
-This takes the URLs.txt generated above and:
+This reads the `URLs.txt` generated above and:
 1. Creates a cover page
 2. creates PDF files for each URL in the file
 
@@ -110,7 +102,7 @@ This takes the URLs.txt generated above and:
 node docusaurus-puppeteer-pdf.js
 ```
 
-## Combine the individual PDFs
+### Combine the individual PDFs
 
 The previous step generated a PDF file for each Docusaurus page, combine the individual pages with `pdftk-java`:
 
