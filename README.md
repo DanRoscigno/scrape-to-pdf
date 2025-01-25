@@ -1,7 +1,7 @@
 Node.js code to:
 1. Generate the ordered list of URLs from documentation built with Docusaurus. This is done using code from [`docusaurus-prince-pdf`](https://github.com/signcl/docusaurus-prince-pdf)
 2. Open each page with [`puppeteer`](https://pptr.dev/) and save the content (without nav or the footer) as a PDF file
-3. Combine the individual PDF files using [Ghostscript](https://www.ghostscript.com/) and [`pdfcombine`](https://github.com/tdegeus/pdfcombine.git).
+3. Combine the individual PDF files using [pdftk-java](https://gitlab.com/pdftk-java/pdftk/-/blob/master/README.md?ref_type=heads)
 
 ## Onetime setup
 
@@ -21,36 +21,40 @@ Add `puppeteer` and other dependencies by running this command in the repo direc
 yarn install
 ```
 
-### pdfcombine
+### pdftk-java
 
-`pdfcombine` should be installed in a Python 3 virtual environment.
-
-Setup the virtual environment from inside the `scrape-to-pdf` directory:
+`pdftk-java` should be installed using Homebrew on a macOS system
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
+brew install pdftk
 ```
 
-Install `pdfcombine`:
+## Use
+
+### Configuration
+
+There is a sample `.env` file, `.env.sample`, that you can copy to `.env`. This file specifies an image, title to place on the cover, and a Copyright notice. Here is the sample:
 
 ```bash
-pip3 install pdfcombine
+COVER_IMAGE=./StarRocks.png
+COVER_TITLE="StarRocks 3.3"
+COPYRIGHT="Copyright (c) 2024 The Linux Foundation"
 ```
 
-### Install Ghostscript
+- Copy `.env.sample` to `.env`
+- Edit the file as needed
 
-```bash
-brew install ghostscript
-```
+> Note:
+>
+> For the `COVER_IMAGE` Use a PNG or JPEG.
 
-## Build your Docusaurus site and serve it
+### Build your Docusaurus site and serve it
 
-It seems to be necessary to run `yarn serve` rather than ~`yarn start`~ to have `docusaurus-prince-pdf` crawl the pages.  I expect that there is a CSS class difference between development and production modes of Docusaurus.
+It seems to be necessary to run `yarn serve` rather than ~`yarn start`~ to have `docusaurus-prince-pdf` crawl the pages. I expect that there is a CSS class difference between development and production modes of Docusaurus.
 
 If you are using the Docker scripts from [StarRocks](https://github.com/StarRocks/starrocks/tree/main/docs/docusaurus/scripts) then run `./scripts/docker-image.sh && ./scripts/docker-build.sh`
 
-## Get the URL of the "home" page
+### Get the URL of the "home" page
 
 Find the URL of the first page to crawl. It needs to be the landing, or home page of the site as the next step will generate a set of PDF files, one for each page of your site by extracting the landing page and looking for the "Next" button at the bottom right corner of each Docusaurus page. If you start from any page other than the first one, then you will only get a portion of the pages. For StarRocks documentation served using the `./scripts/docker-build.sh` script this will be:
 
@@ -58,12 +62,14 @@ Find the URL of the first page to crawl. It needs to be the landing, or home pag
 http://localhost:3000/zh/docs/introduction/StarRocks_intro/
 ```
 
-## Generate a list of pages (URLs)
+### Generate a list of pages (URLs)
 
 This command will crawl the docs and list the URLs in order:
 
 ```bash
-npx docusaurus-prince-pdf --list-only -u http://localhost:3000/zh/docs/introduction/StarRocks_intro/ --file URLs.txt
+npx docusaurus-prince-pdf --list-only \
+  -u http://localhost:3000/zh/docs/introduction/StarRocks_intro/ \
+  --file URLs.txt
 ```
 
 <details>
@@ -86,32 +92,22 @@ http://localhost:3000/zh/docs/developers/trace-tools/Trace/%
 </details>
 
 
-## docusaurus-puppeteer-pdf.js
+### Generate PDF files for each Docusaurus page
 
-This takes the URLs.txt generated above and:
-1. creates PDF files for each URL in the file
-2. creates the file `combine.yaml` which contains the titles of the pages and filenames. This is the input to the next step.
-3. Creates a cover page
-
-### Configuration
-
-There is a sample `.env` file, `.env.sample`, that you can copy to `.env`. This file specifies an image, title to place on the cover, and a Copyright notice. Here is the sample:
-
-```bash
-COVER_IMAGE=./StarRocks.png
-COVER_TITLE="StarRocks 3.3"
-COPYRIGHT="Copyright (c) 2024 The Linux Foundation"
-```
-
-- Copy `.env.sample` to `.env`
-- Edit the file as needed
-
-> Note:
->
-> For the `COVER_IMAGE` Use a PNG or JPEG.
+This reads the `URLs.txt` generated above and:
+1. Creates a cover page
+2. creates PDF files for each URL in the file
 
 ```bash
 node docusaurus-puppeteer-pdf.js
+```
+
+### Combine the individual PDFs
+
+The previous step generated a PDF file for each Docusaurus page, combine the individual pages with `pdftk-java`:
+
+```bash
+pdftk 0*pdf output docs.pdf
 ```
 
 ## Customizing the docs site for PDF

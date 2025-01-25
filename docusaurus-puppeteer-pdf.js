@@ -5,7 +5,6 @@ const readline = require('node:readline');
 const puppeteer = require('puppeteer');
 const scrollToBottom = require('scroll-to-bottomjs');
 const PDFDocument = require('pdfkit');
-//const fs = require('fs');
 
 function coverPage() {
     // Create a document
@@ -30,16 +29,6 @@ function coverPage() {
     // Finalize PDF file
     doc.end();
 
-    const pageDetails = `    - file: 0000.pdf\n      title: ` + process.env.COVER_TITLE + `\n`;
-    fs.appendFile('./combine.yaml', pageDetails, err => {
-        if (err) {
-            console.error(err);
-        } else {
-            console.log(`Coverpage`);
-            console.log(`Filename is 0000.pdf`);
-            // file written successfully
-        }
-    });
 }
 
 // cover page is 0.pdf, so start `i` at 1
@@ -71,16 +60,8 @@ async function requestPage(url) {
     const cleanedTitle = pageTitle.replaceAll('\[', '').replaceAll('\]', '').replaceAll(':', '').replaceAll(' | StarRocks', '').replaceAll(' | CelerData', '')
   const pageDetails = `    - file: ${fileName}\n      title: ${cleanedTitle}\n`;
 
-  fs.appendFile('./combine.yaml', pageDetails, err => {
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(`Title is ${cleanedTitle}`);
-      console.log(`Filename is ` + fileName );
-      // file written successfully
-    }
-  });
-
+  console.log(`Title is ${cleanedTitle}`);
+  console.log(`Filename is ` + fileName );
   i++;
 
   await browser.close();
@@ -104,16 +85,6 @@ async function processLineByLine() {
   });
   }
 }
-
-const yamlHeader = 'files:\n';
-
-fs.writeFile('./combine.yaml', yamlHeader, err => {
-  if (err) {
-    console.error(err);
-  } else {
-    // file written successfully
-  }
-});
 
 coverPage();
 processLineByLine();
