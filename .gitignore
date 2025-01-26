@@ -1,5 +1,7 @@
 .venv
+tmp/**
 .env
+.env.*
 *.pdf
 URLs.txt
 pdf/**
