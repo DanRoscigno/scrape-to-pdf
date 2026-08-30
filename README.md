@@ -13,6 +13,12 @@ Clone this repo to your machine.
 
 Use Node.js version 21.
 
+> Note:
+>
+> If you see:
+> `import pkg from './package.json' assert { type: 'json' };`
+> when you run docusaurus-prince, then make sure you are using nodejs version 21
+
 ### Puppeteer
 
 Add `puppeteer` and other dependencies by running this command in the repo directory
